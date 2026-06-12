@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClaraMente</title>
+<style>
+  :root{--bg:#0f0f14;--surface:#16161f;--surface2:#1e1e2a;--surface3:#26263a;--border:#2e2e45;--purple:#9b7fe8;--purple-light:#b89ff0;--purple-dim:#6c56c0;--purple-glow:rgba(155,127,232,0.15);--gray:#8a8aa0;--gray-light:#b0b0c8;--white:#efeff5;--text:#d4d4e8;--danger:#e87f7f;--warn:#e8c47f;--success:#7fe8a8;--radius:14px;--radius-sm:8px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+  header{width:100%;max-width:680px;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between;}
+  .logo{display:flex;align-items:center;gap:10px;}
+  .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--purple-dim),var(--purple));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+  .logo-text{font-size:20px;font-weight:700;color:var(--white);}
+  .logo-text span{color:var(--purple-light);}
+  .tagline{font-size:11px;color:var(--gray);letter-spacing:1.5px;text-transform:uppercase;}
+  .header-nav{display:flex;gap:8px;}
+  .nav-btn{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;color:var(--gray-light);cursor:pointer;transition:all .15s;}
+  .nav-btn:hover{border-color:var(--purple-dim);color:var(--white);}
+  .nav-btn.active{border-color:var(--purple);color:var(--purple-light);background:var(--purple-glow);}
+  main{width:100%;max-width:680px;padding:20px 24px;flex:1;display:flex;flex-direction:column;gap:20px;}
+  .screen{display:none;flex-direction:column;gap:20px;}
+  .screen.active{display:flex;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;}
+  .card-title{font-size:13px;font-weight:600;color:var(--purple-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;}
+  .welcome-hero{text-align:center;padding:32px 24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);}
+  .welcome-hero .icon{font-size:40px;margin-bottom:12px;}
+  .welcome-hero h1{font-size:24px;font-weight:700;color:var(--white);margin-bottom:8px;}
+  .welcome-hero h1 span{color:var(--purple-light);}
+  .welcome-hero p{color:var(--gray-light);font-size:14px;line-height:1.6;max-width:360px;margin:0 auto 22px;}
+  .btn-primary{background:linear-gradient(135deg,var(--purple-dim),var(--purple));color:#fff;border:none;border-radius:var(--radius-sm);padding:13px 28px;font-size:14px;font-weight:600;cursor:pointer;width:100%;max-width:280px;transition:opacity .2s;}
+  .btn-primary:hover{opacity:.9;}
+  .btn-secondary{background:var(--surface2);border:1.5px solid var(--purple-dim);color:var(--purple-light);border-radius:var(--radius-sm);padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;width:100%;max-width:280px;margin-top:10px;transition:all .15s;}
+  .btn-secondary:hover{background:var(--purple-glow);}
+  .checkin-step{display:none;}
+  .checkin-step.active{display:block;}
+  .step-q{font-size:18px;font-weight:600;color:var(--white);margin-bottom:20px;line-height:1.4;}
+  .step-lbl{font-size:12px;color:var(--gray);margin-bottom:4px;}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .opt{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-size:14px;cursor:pointer;transition:all .15s;text-align:left;display:flex;align-items:center;gap:8px;}
+  .opt:hover{border-color:var(--purple-dim);background:var(--surface3);}
+  .opt.sel{border-color:var(--purple);background:var(--purple-glow);color:var(--white);}
+  .slider-wrap{margin-top:4px;}
+  .slider-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-bottom:6px;}
+  input[type=range]{width:100%;accent-color:var(--purple);cursor:pointer;}
+  .slider-val{text-align:center;font-size:22px;font-weight:700;color:var(--purple-light);margin-top:8px;}
+  .prog-wrap{margin-bottom:16px;}
+  .prog-bar{height:3px;background:var(--surface3);border-radius:10px;overflow:hidden;margin-bottom:8px;}
+  .prog-fill{height:100%;background:linear-gradient(90deg,var(--purple-dim),var(--purple-light));border-radius:10px;transition:width .4s;}
+  .prog-txt{font-size:12px;color:var(--gray);}
+  .nav-btns{display:flex;gap:10px;margin-top:20px;}
+  .btn-back{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--gray-light);padding:12px 20px;font-size:14px;cursor:pointer;transition:all .15s;}
+  .btn-back:hover{border-color:var(--purple-dim);color:var(--white);}
+  .btn-next{flex:1;background:linear-gradient(135deg,var(--purple-dim),var(--purple));border:none;border-radius:var(--radius-sm);color:#fff;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .2s;}
+  .btn-next:hover{opacity:.9;}
+  .cat-block{margin-bottom:18px;}
+  .cat-title{font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{background:var(--surface2);border:1.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:13px;color:var(--text);cursor:pointer;transition:all .15s;user-select:none;}
+  .chip:hover{border-color:var(--purple-dim);background:var(--surface3);}
+  .chip.sel{border-color:var(--purple);background:var(--purple-glow);color:var(--white);font-weight:600;}
+  .sel-count{font-size:13px;color:var(--purple-light);margin-bottom:14px;min-height:20px;}
+  .loading-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px 24px;text-align:center;}
+  .spinner{width:40px;height:40px;border:3px solid var(--surface3);border-top-color:var(--purple);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  /* TAREFA CLICÁVEL */
+  .ct{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;transition:border-color .15s,opacity .2s;user-select:none;}
+  .ct:hover{border-color:var(--purple-dim);}
+  .ct.done{opacity:.45;}
+  .ct.done .ct-text{text-decoration:line-through;color:var(--gray);}
+  .ct.done .ct-check{background:var(--purple);border-color:var(--purple);}
+  .ct.done .ct-check::after{content:'✓';font-size:10px;color:#fff;}
+  .ct-check{width:18px;height:18px;border:2px solid var(--purple-dim);border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+  .ct-check.danger{border-color:var(--danger);}
+  .ct-check.care{border-color:var(--purple);}
+  .ct-text{font-size:14px;color:var(--text);line-height:1.5;flex:1;pointer-events:none;}
+  .tag{display:inline-block;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;margin-left:6px;pointer-events:none;}
+  .te{background:rgba(126,232,168,.15);color:var(--success);}
+  .tw{background:rgba(232,196,127,.15);color:var(--warn);}
+  .td{background:rgba(232,127,127,.15);color:var(--danger);}
+  .tc{background:rgba(155,127,232,.15);color:var(--purple-light);}
+  /* PROGRESSO RESULTADO */
+  .result-prog{margin-bottom:16px;}
+  .result-prog-bar{height:6px;background:var(--surface3);border-radius:4px;overflow:hidden;margin-top:6px;}
+  .result-prog-fill{height:100%;border-radius:4px;transition:width .3s,background .3s;}
+  /* INSIGHT */
+  .insight{background:var(--purple-glow);border:1px solid var(--purple-dim);border-radius:var(--radius-sm);padding:14px 16px;font-size:14px;color:var(--purple-light);line-height:1.6;font-style:italic;}
+  .mode-badge{display:inline-flex;align-items:center;gap:6px;background:var(--purple-glow);border:1px solid var(--purple-dim);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--purple-light);letter-spacing:.5px;margin-bottom:14px;text-transform:uppercase;}
+  .sec-title{font-size:12px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+  .task-list{display:flex;flex-direction:column;gap:8px;}
+  .result-sec{margin-bottom:16px;}
+  .btn-restart{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--gray-light);padding:12px;font-size:14px;cursor:pointer;width:100%;text-align:center;transition:all .15s;}
+  .btn-restart:hover{border-color:var(--purple-dim);color:var(--white);}
+  .error-box{background:rgba(232,127,127,.1);border:1px solid var(--danger);border-radius:var(--radius-sm);padding:14px;color:var(--danger);font-size:14px;text-align:center;}
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a2a1a;border:1px solid var(--success);border-radius:20px;padding:8px 18px;font-size:12px;color:var(--success);pointer-events:none;opacity:0;transition:opacity .3s;z-index:999;}
+  .toast.show{opacity:1;}
+  /* HISTÓRICO */
+  .hist-entry{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:10px;}
+  .hist-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+  .hist-header:hover{background:var(--surface2);}
+  .hist-mode{font-size:14px;font-weight:700;color:var(--white);}
+  .hist-date{font-size:12px;color:var(--gray);margin-top:3px;}
+  .hist-pct{font-size:20px;font-weight:700;color:var(--purple-light);}
+  .hist-pct-lbl{font-size:11px;color:var(--gray);}
+  .hist-mini-bar{height:4px;width:70px;background:var(--surface3);border-radius:4px;overflow:hidden;margin-top:4px;}
+  .hist-mini-fill{height:100%;background:linear-gradient(90deg,var(--purple-dim),var(--success));border-radius:4px;transition:width .3s;}
+  .hist-chev{font-size:11px;color:var(--gray);margin-left:8px;transition:transform .2s;display:inline-block;}
+  .hist-entry.open .hist-chev{transform:rotate(180deg);}
+  .hist-body{display:none;padding:0 20px 18px;border-top:1px solid var(--border);}
+  .hist-entry.open .hist-body{display:block;}
+  .hist-sec{margin-top:14px;}
+  .hist-sec-title{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+  /* tarefa no histórico — também usa .ct */
+  .hist-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;pointer-events:none;}
+  .hist-dot.done{background:var(--success);}
+  .hist-dot.undone{background:transparent;border:2px solid var(--border);}
+  .hist-name{font-size:13px;color:var(--text);flex:1;pointer-events:none;}
+  .hist-name.done{text-decoration:line-through;color:var(--gray);}
+  .hist-status{font-size:11px;font-weight:600;pointer-events:none;}
+  .hist-status.done{color:var(--success);}
+  .hist-status.undone{color:var(--gray);}
+  .hist-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--gray-light);}
+  .resume-card{background:var(--surface);border:1.5px solid var(--purple-dim);border-radius:var(--radius);padding:20px;}
+  .resume-badge{display:inline-flex;align-items:center;gap:6px;background:var(--purple-glow);border:1px solid var(--purple-dim);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;color:var(--purple-light);text-transform:uppercase;margin-bottom:12px;}
+  footer{padding:16px 24px;text-align:center;font-size:11px;color:var(--gray);}
+</style>
+</head>
+<body>
+<div class="toast" id="toast">✅ Progresso salvo</div>
+<header>
+  <div class="logo">
+    <div class="logo-icon">🧠</div>
+    <div>
+      <div class="logo-text">Clara<span>Mente</span></div>
+      <div class="tagline">Copiloto Executivo</div>
+    </div>
+  </div>
+  <div class="header-nav">
+    <button class="nav-btn active" id="navHome" onclick="navTo('screen-welcome')">🏠 Início</button>
+    <button class="nav-btn" id="navHist" onclick="navTo('screen-history')">📋 Histórico</button>
+  </div>
+</header>
+<main>
+  <!-- WELCOME -->
+  <div class="screen active" id="screen-welcome">
+    <div class="welcome-hero">
+      <div class="icon">🧠</div>
+      <h1>Clara<span>Mente</span></h1>
+      <p>Seu copiloto executivo. Não para fazer tudo — para parar de viver em colapso.</p>
+      <button class="btn-primary" onclick="startNew()">Começar novo check-in</button><br>
+      <button class="btn-secondary" id="btnRetomar" style="display:none" onclick="goTo('screen-memory')">↩ Retomar sessão anterior</button>
+    </div>
+    <div class="card" id="quickCard" style="display:none">
+      <div class="card-title">📊 Última sessão</div>
+      <div id="quickBody"></div>
+    </div>
+  </div>
+  <!-- MEMORY -->
+  <div class="screen" id="screen-memory">
+    <div class="resume-card" id="resumeCard"></div>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goTo('screen-welcome')">← Voltar</button>
+      <button class="btn-next" onclick="loadSession()">Continuar de onde parei →</button>
+    </div>
+  </div>
+  <!-- CHECKIN -->
+  <div class="screen" id="screen-checkin">
+    <div class="card">
+      <div class="prog-wrap">
+        <div class="prog-bar"><div class="prog-fill" id="pFill" style="width:0%"></div></div>
+        <div class="prog-txt" id="pTxt">Passo 1 de 5</div>
+      </div>
+      <div class="checkin-step active" id="step-1">
+        <div class="step-lbl">Passo 1 de 5</div>
+        <div class="step-q">Como está sua energia agora?</div>
+        <div class="opts">
+          <button class="opt" onclick="selOpt(this,'energia','No limite')"><span>🔴</span>No limite</button>
+          <button class="opt" onclick="selOpt(this,'energia','Baixa')"><span>🟠</span>Baixa</button>
+          <button class="opt" onclick="selOpt(this,'energia','Moderada')"><span>🟡</span>Moderada</button>
+          <button class="opt" onclick="selOpt(this,'energia','Boa')"><span>🟢</span>Boa</button>
+        </div>
+        <div class="nav-btns"><button class="btn-back" onclick="goTo('screen-welcome')">← Voltar</button><button class="btn-next" onclick="nStep(2)">Continuar →</button></div>
+      </div>
+      <div class="checkin-step" id="step-2">
+        <div class="step-lbl">Passo 2 de 5</div>
+        <div class="step-q">Como está seu estado emocional?</div>
+        <div class="opts">
+          <button class="opt" onclick="selOpt(this,'emocional','Sobrecarregado')"><span>😵</span>Sobrecarregado</button>
+          <button class="opt" onclick="selOpt(this,'emocional','Ansioso')"><span>😰</span>Ansioso</button>
+          <button class="opt" onclick="selOpt(this,'emocional','Neutro')"><span>😐</span>Neutro</button>
+          <button class="opt" onclick="selOpt(this,'emocional','Focado')"><span>🎯</span>Focado</button>
+        </div>
+        <div class="nav-btns"><button class="btn-back" onclick="nStep(1)">← Voltar</button><button class="btn-next" onclick="nStep(3)">Continuar →</button></div>
+      </div>
+      <div class="checkin-step" id="step-3">
+        <div class="step-lbl">Passo 3 de 5</div>
+        <div class="step-q">Quantas horas disponíveis você tem hoje?</div>
+        <div class="slider-wrap">
+          <div class="slider-labels"><span>1h</span><span>4h</span><span>8h+</span></div>
+          <input type="range" id="slTempo" min="1" max="10" value="4" oninput="updSlider('tempo','slTempo','vTempo')">
+          <div class="slider-val" id="vTempo">4h</div>
+        </div>
+        <div class="nav-btns"><button class="btn-back" onclick="nStep(2)">← Voltar</button><button class="btn-next" onclick="setSlider('tempo','slTempo');nStep(4)">Continuar →</button></div>
+      </div>
+      <div class="checkin-step" id="step-4">
+        <div class="step-lbl">Passo 4 de 5</div>
+        <div class="step-q">Quantas interrupções você espera hoje?</div>
+        <div class="opts">
+          <button class="opt" onclick="selOpt(this,'interrupcoes','Poucas (1-2)')"><span>🟢</span>Poucas (1-2)</button>
+          <button class="opt" onclick="selOpt(this,'interrupcoes','Moderadas (3-5)')"><span>🟡</span>Moderadas (3-5)</button>
+          <button class="opt" onclick="selOpt(this,'interrupcoes','Muitas (6+)')"><span>🟠</span>Muitas (6+)</button>
+          <button class="opt" onclick="selOpt(this,'interrupcoes','Dia caótico')"><span>🔴</span>Dia caótico</button>
+        </div>
+        <div class="nav-btns"><button class="btn-back" onclick="nStep(3)">← Voltar</button><button class="btn-next" onclick="nStep(5)">Continuar →</button></div>
+      </div>
+      <div class="checkin-step" id="step-5">
+        <div class="step-lbl">Passo 5 de 5</div>
+        <div class="step-q">Como está o caos mental agora?</div>
+        <div class="slider-wrap">
+          <div class="slider-labels"><span>Tranquilo</span><span>Moderado</span><span>Caótico</span></div>
+          <input type="range" id="slCaos" min="1" max="10" value="5" oninput="updSlider('caos','slCaos','vCaos')">
+          <div class="slider-val" id="vCaos">5/10</div>
+        </div>
+        <div class="nav-btns"><button class="btn-back" onclick="nStep(4)">← Voltar</button><button class="btn-next" onclick="setSlider('caos','slCaos');goTo('screen-tasks')">Selecionar tarefas →</button></div>
+      </div>
+    </div>
+  </div>
+  <!-- TASKS -->
+  <div class="screen" id="screen-tasks">
+    <div class="card">
+      <div class="card-title">🎯 Tarefas do seu dia</div>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:12px;">Toque em tudo que faz parte do seu dia de hoje.</p>
+      <div class="sel-count" id="selCount">Nenhuma tarefa selecionada</div>
+      <div class="cat-block"><div class="cat-title">💼 Trabalho & Profissional</div><div class="chips" id="c0"></div></div>
+      <div class="cat-block"><div class="cat-title">📱 Comunicação & Retornos</div><div class="chips" id="c1"></div></div>
+      <div class="cat-block"><div class="cat-title">🏠 Casa & Rotina</div><div class="chips" id="c2"></div></div>
+      <div class="cat-block"><div class="cat-title">💆 Saúde & Autocuidado</div><div class="chips" id="c3"></div></div>
+      <div class="cat-block"><div class="cat-title">💰 Finanças & Burocracias</div><div class="chips" id="c4"></div></div>
+      <div class="cat-block"><div class="cat-title">👨‍👩‍👧 Família & Relacionamentos</div><div class="chips" id="c5"></div></div>
+      <div class="cat-block"><div class="cat-title">📚 Estudos & Desenvolvimento</div><div class="chips" id="c6"></div></div>
+      <div class="cat-block"><div class="cat-title">😓 O que estou evitando</div><div class="chips" id="c7"></div></div>
+      <div class="nav-btns">
+        <button class="btn-back" onclick="goTo('screen-checkin');nStep(5)">← Voltar</button>
+        <button class="btn-next" onclick="submitAI()">Gerar meu plano →</button>
+      </div>
+    </div>
+  </div>
+  <!-- LOADING -->
+  <div class="screen" id="screen-loading">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <div style="color:var(--gray-light);font-size:15px;">Processando sua realidade executiva...</div>
+      <div style="color:var(--gray);font-size:13px;margin-top:6px;">Organizando o que realmente cabe no seu dia</div>
+    </div>
+  </div>
+  <!-- RESULT -->
+  <div class="screen" id="screen-result">
+    <div class="card" id="resultCard"></div>
+    <button class="btn-restart" onclick="restart()">↩ Novo check-in</button>
+  </div>
+  <!-- HISTORY -->
+  <div class="screen" id="screen-history">
+    <div id="histContent"></div>
+  </div>
+</main>
+<footer>
+  <div style="max-width:680px;margin:0 auto;padding:16px 24px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px;text-align:center;">
+    <div style="font-size:12px;color:var(--gray-light);font-weight:600;">
+      ClaraMente &copy; 2026 — Axis Gestão Psicossocial. Todos os direitos reservados.
+    </div>
+    <div style="font-size:11px;color:var(--gray);line-height:1.6;">
+      Este aplicativo utiliza inteligência artificial para apoio à organização executiva e não substitui acompanhamento clínico, psicológico ou médico.
+    </div>
+    <div style="font-size:11px;color:var(--gray);line-height:1.6;">
+      🔒 <strong style="color:var(--gray-light);">Privacidade e LGPD:</strong> Os dados inseridos neste aplicativo são processados localmente no seu dispositivo e utilizados exclusivamente para gerar seu plano executivo personalizado. Não coletamos, armazenamos ou compartilhamos dados pessoais identificáveis com terceiros. O uso deste aplicativo implica concordância com esta política, em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).
+    </div>
+  </div>
+</footer>
+<script>
+// ── ESTADO ──
+const S={energia:'',emocional:'',tempo:'4',interrupcoes:'',caos:'5'};
+const selTasks=new Set();
+let curPlan=null, curDone={}, curSIdx=0;
+const MI={'MODO EXAUSTÃO':'🔴','MODO PROCRASTINAÇÃO':'🌀','MODO PERFECCIONISMO':'🔍','MODO SOBRECARGA':'⚡','MODO URGÊNCIA REAL':'🎯','MODO INTERRUPÇÃO':'↩'};
+const CATS=[
+  ['c0',['Responder e-mails','Fazer reunião','Entregar relatório','Criar apresentação','Revisar documento','Ligar para cliente','Enviar proposta','Atualizar planilha','Planejar semana','Organizar arquivos','Resolver problema urgente','Dar feedback para equipe']],
+  ['c1',['Responder mensagens atrasadas','Retornar ligação','Confirmar compromisso','Enviar áudio pendente','Responder e-mail importante','Agendar conversa','Dar satisfação a alguém','Responder grupo de trabalho']],
+  ['c2',['Lavar louça','Fazer compras','Organizar quarto','Lavar roupa','Preparar refeição','Limpar banheiro','Jogar lixo fora','Pagar conta de casa','Arrumar algum cômodo','Cuidar de pet']],
+  ['c3',['Tomar remédio','Beber água','Comer no horário','Fazer pausa','Dormir cedo','Exercício leve','Caminhar 15 min','Meditação/respiração','Consulta médica','Cuidar da higiene pessoal','Descansar sem culpa']],
+  ['c4',['Pagar boleto','Verificar saldo','Resolver pendência bancária','Emitir nota fiscal','Organizar recibos','Renovar documento','Fazer transferência','Checar fatura do cartão']],
+  ['c5',['Ligar para familiar','Passar tempo com filho(s)','Resolver algo para pais','Levar alguém a algum lugar','Compromisso familiar','Conversa importante','Cuidar de alguém','Fazer compra para família']],
+  ['c6',['Assistir aula','Ler capítulo','Fazer exercício do curso','Estudar para prova','Pesquisar sobre projeto','Escrever algo','Revisar anotações','Aprender algo novo']],
+  ['c7',['Aquela tarefa que fica adiando','Uma conversa difícil','Resolver pendência antiga','Tomar uma decisão','Começar projeto parado','Organizar algo bagunçado','Pedir ajuda que precisa','Admitir que algo não vai sair hoje']]
+];
+CATS.forEach(([id,tasks])=>{
+  const el=document.getElementById(id);
+  tasks.forEach(t=>{
+    const c=document.createElement('div');
+    c.className='chip';c.textContent=t;
+    c.onclick=()=>{
+      if(selTasks.has(t)){selTasks.delete(t);c.classList.remove('sel');}
+      else{selTasks.add(t);c.classList.add('sel');}
+      const n=selTasks.size;
+      document.getElementById('selCount').textContent=n?`${n} tarefa${n>1?'s':''} selecionada${n>1?'s':''}`:'Nenhuma tarefa selecionada';
+    };
+    el.appendChild(c);
+  });
+});
+
+// ── STORAGE ──
+async function saveHistory(data){
+  await window.storage.set('cm3',JSON.stringify(data.slice(0,20)));
+}
+async function loadHistory(){
+  // tenta cm3, depois versões anteriores
+  for(const key of ['cm3','claramente-v2','claramente-sessions']){
+    try{
+      const r=await window.storage.get(key).catch(()=>null);
+      if(r){
+        const d=JSON.parse(r.value);
+        if(key!=='cm3') await saveHistory(d);
+        return d;
+      }
+    }catch(e){}
+  }
+  return[];
+}
+
+// ── STATS (conta TODAS as categorias) ──
+function getStats(s){
+  const p=s.plan,d=s.doneState||{};
+  const all=[
+    ...(p.essencial_hoje||[]),
+    ...(p.importante||[]),
+    ...(p.pode_esperar||[]),
+    ...(p.descartar_ou_delegar||[]),
+    ...(p.autocuidado?[p.autocuidado]:[])
+  ];
+  const done=all.filter(t=>d[t]).length;
+  return{all,done,total:all.length,pct:all.length?Math.round(done/all.length*100):0};
+}
+
+// ── TOAST ──
+function showToast(){
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt=setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+// ── ATUALIZA BARRA PROGRESSO ──
+function updateBars(sessions, sIdx){
+  const ns=getStats(sessions[sIdx]);
+  const allDone=ns.pct===100;
+  const col=allDone?'var(--success)':'linear-gradient(90deg,var(--purple-dim),var(--purple-light))';
+
+  // Tela resultado
+  const rp=document.getElementById('rp');
+  if(rp){
+    rp.querySelector('.rp-lbl').textContent=allDone?'🎉 Todas concluídas!':'Progresso do dia';
+    rp.querySelector('.rp-pct').textContent=`${ns.pct}% — ${ns.done}/${ns.total}`;
+    rp.querySelector('.rp-pct').style.color=allDone?'var(--success)':'var(--purple-light)';
+    rp.querySelector('.result-prog-fill').style.width=ns.pct+'%';
+    rp.querySelector('.result-prog-fill').style.background=col;
+    let congEl=rp.querySelector('.rp-cong');
+    if(allDone&&!congEl){
+      congEl=document.createElement('div');congEl.className='rp-cong';
+      congEl.style.cssText='text-align:center;font-size:13px;color:var(--success);margin-top:10px;padding:10px;background:rgba(126,232,168,.08);border:1px solid var(--success);border-radius:var(--radius-sm);';
+      congEl.textContent='Você concluiu tudo que planejou hoje. Isso é consistência.';
+      rp.appendChild(congEl);
+    }else if(!allDone&&congEl){congEl.remove();}
+  }
+
+  // Histórico — busca entry pelo atributo data-sidx
+  const hEntry=document.querySelector(`.hist-entry[data-sidx="${sIdx}"]`);
+  if(hEntry){
+    const pe=hEntry.querySelector('.hist-pct');
+    const le=hEntry.querySelector('.hist-pct-lbl');
+    const be=hEntry.querySelector('.hist-mini-fill');
+    if(pe) pe.textContent=ns.pct+'%';
+    if(le) le.textContent=`${ns.done}/${ns.total} feitas`;
+    if(be) be.style.width=ns.pct+'%';
+  }
+}
+
+// ── CLICK GLOBAL ──
+document.addEventListener('click',async function(e){
+  const item=e.target.closest('.ct[data-k]');
+  if(!item) return;
+  e.stopPropagation();
+  const key=item.getAttribute('data-k');
+  const sIdx=parseInt(item.getAttribute('data-si')||'0');
+  const isDone=!item.classList.contains('done');
+  item.classList.toggle('done',isDone);
+  // filhos histórico
+  const dot=item.querySelector('.hist-dot');
+  if(dot){dot.className='hist-dot '+(isDone?'done':'undone');}
+  const nm=item.querySelector('.hist-name');
+  if(nm){nm.classList.toggle('done',isDone);}
+  const st=item.querySelector('.hist-status');
+  if(st){st.textContent=isDone?'✓ Feito':'Pendente';st.className='hist-status '+(isDone?'done':'undone');}
+  // salva
+  const sessions=await loadHistory();
+  if(sessions[sIdx]){
+    if(!sessions[sIdx].doneState) sessions[sIdx].doneState={};
+    sessions[sIdx].doneState[key]=isDone;
+    await saveHistory(sessions);
+    if(sIdx===curSIdx) curDone[key]=isDone;
+    showToast();
+    updateBars(sessions,sIdx);
+  }
+});
+
+// ── CRIA ELEMENTO DE TAREFA ──
+function mkTask(taskName,isDone,sIdx,checkCls=''){
+  const d=document.createElement('div');
+  d.className='ct'+(isDone?' done':'');
+  d.setAttribute('data-k',taskName);
+  d.setAttribute('data-si',sIdx);
+  const chk=document.createElement('div');
+  chk.className='ct-check'+(checkCls?' '+checkCls:'');
+  const txt=document.createElement('div');
+  txt.className='ct-text';
+  txt.textContent=taskName;
+  d.appendChild(chk);d.appendChild(txt);
+  return{el:d,txt};
+}
+
+// ── RENDER RESULTADO ──
+function renderResult(plan,isResume,sIdx){
+  goTo('screen-result');
+  curSIdx=sIdx;
+  const card=document.getElementById('resultCard');
+  card.innerHTML='';
+
+  // Barra de progresso
+  const sessions_snap={[sIdx]:{plan,doneState:curDone}};
+  const ns=getStats({plan,doneState:curDone});
+  const rp=document.createElement('div');
+  rp.id='rp';rp.className='result-prog';
+  rp.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <span class="rp-lbl" style="font-size:12px;color:var(--gray-light);">Progresso do dia</span>
+    <span class="rp-pct" style="font-size:13px;font-weight:700;color:var(--purple-light);">${ns.pct}% — ${ns.done}/${ns.total}</span>
+  </div>
+  <div class="result-prog-bar"><div class="result-prog-fill" style="width:${ns.pct}%;background:linear-gradient(90deg,var(--purple-dim),var(--purple-light));"></div></div>`;
+  card.appendChild(rp);
+
+  const icon=MI[plan.modo]||'🧠';
+  const badge=document.createElement('div');badge.className='mode-badge';badge.textContent=`${icon} ${plan.modo||'ANÁLISE EXECUTIVA'}`;card.appendChild(badge);
+  if(isResume){const r=document.createElement('div');r.style.cssText='font-size:12px;color:var(--success);margin-bottom:10px;';r.textContent='↩ Plano retomado — toque nas tarefas para marcar como concluído';card.appendChild(r);}
+  if(plan.frase_diagnostico){const ib=document.createElement('div');ib.className='insight';ib.style.marginBottom='14px';ib.textContent=`"${plan.frase_diagnostico}"`;card.appendChild(ib);}
+
+  const SECS=[
+    {k:'essencial_hoje',l:'🎯 Essencial hoje',tag:'essencial',tc:'te',cc:''},
+    {k:'importante',l:'📌 Importante',tag:'',tc:'',cc:''},
+    {k:'pode_esperar',l:'⏳ Pode esperar',tag:'aguarda',tc:'tw',cc:''},
+    {k:'descartar_ou_delegar',l:'🚫 Descartar ou delegar',tag:'fora',tc:'td',cc:'danger'}
+  ];
+  SECS.forEach(s=>{
+    if(!plan[s.k]?.length) return;
+    const sec=document.createElement('div');sec.className='result-sec';
+    const t=document.createElement('div');t.className='sec-title';t.textContent=s.l;sec.appendChild(t);
+    const list=document.createElement('div');list.className='task-list';
+    plan[s.k].forEach(task=>{
+      const {el,txt}=mkTask(task,curDone[task]||false,sIdx,s.cc);
+      if(s.tag){const tg=document.createElement('span');tg.className='tag '+s.tc;tg.textContent=s.tag;txt.appendChild(tg);}
+      list.appendChild(el);
+    });
+    sec.appendChild(list);card.appendChild(sec);
+  });
+  if(plan.autocuidado){
+    const sec=document.createElement('div');sec.className='result-sec';
+    const t=document.createElement('div');t.className='sec-title';t.textContent='💜 Autocuidado';sec.appendChild(t);
+    const {el,txt}=mkTask(plan.autocuidado,curDone[plan.autocuidado]||false,sIdx,'care');
+    const tg=document.createElement('span');tg.className='tag tc';tg.textContent='cuide-se';txt.appendChild(tg);
+    sec.appendChild(el);card.appendChild(sec);
+  }
+  if(plan.plano_blocos?.length){
+    const sec=document.createElement('div');sec.className='result-sec';
+    const t=document.createElement('div');t.className='sec-title';t.textContent='🗓 Blocos do dia';sec.appendChild(t);
+    const wrap=document.createElement('div');wrap.style.cssText='display:flex;flex-direction:column;gap:8px;';
+    plan.plano_blocos.forEach(b=>{
+      const bl=document.createElement('div');
+      bl.style.cssText='background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;gap:12px;';
+      bl.innerHTML=`<div style="font-size:12px;font-weight:700;color:var(--purple-light);min-width:52px;">${b.horario}</div><div style="font-size:14px;color:var(--text);line-height:1.5;">${b.foco}</div>`;
+      wrap.appendChild(bl);
+    });
+    sec.appendChild(wrap);card.appendChild(sec);
+  }
+  if(plan.frase_final){const ib=document.createElement('div');ib.className='insight';ib.textContent=plan.frase_final;card.appendChild(ib);}
+}
+
+// ── HISTORY ──
+async function renderHistoryScreen(){
+  const sessions=await loadHistory();
+  const el=document.getElementById('histContent');
+  if(!sessions.length){
+    el.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--gray);"><div style="font-size:36px;margin-bottom:12px;">📋</div><div style="font-size:15px;font-weight:600;color:var(--gray-light);margin-bottom:8px;">Nenhum histórico ainda</div><div style="font-size:13px;">Complete seu primeiro check-in para começar.</div></div>`;
+    return;
+  }
+  el.innerHTML='';
+  const lbl=document.createElement('div');
+  lbl.style.cssText='font-size:13px;color:var(--gray);margin-bottom:14px;';
+  lbl.textContent=`${sessions.length} sessão${sessions.length>1?'ões':''} registrada${sessions.length>1?'s':''}`;
+  el.appendChild(lbl);
+
+  sessions.forEach((s,sIdx)=>{
+    const p=s.plan,d=s.doneState||{};
+    const{pct,done,total}=getStats(s);
+    const icon=MI[p.modo]||'🧠';
+
+    const entry=document.createElement('div');
+    entry.className='hist-entry';
+    entry.setAttribute('data-sidx',sIdx);
+
+    const hdr=document.createElement('div');
+    hdr.className='hist-header';
+    hdr.innerHTML=`<div><div class="hist-mode">${icon} ${p.modo||'Análise'}</div><div class="hist-date">${s.date}</div></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="text-align:right;">
+          <div class="hist-pct">${pct}%</div>
+          <div class="hist-pct-lbl">${done}/${total} feitas</div>
+          <div class="hist-mini-bar"><div class="hist-mini-fill" style="width:${pct}%"></div></div>
+        </div>
+        <div class="hist-chev">▼</div>
+      </div>`;
+    hdr.onclick=()=>entry.classList.toggle('open');
+
+    const body=document.createElement('div');
+    body.className='hist-body';
+
+    if(p.frase_diagnostico){
+      const dg=document.createElement('div');dg.className='insight';dg.style.marginTop='14px';dg.textContent=`"${p.frase_diagnostico}"`;body.appendChild(dg);
+    }
+
+    const HCATS=[
+      {l:'🎯 Essencial hoje',tasks:p.essencial_hoje||[]},
+      {l:'📌 Importante',tasks:p.importante||[]},
+      {l:'⏳ Pode esperar',tasks:p.pode_esperar||[]},
+      {l:'🚫 Descartar / Delegar',tasks:p.descartar_ou_delegar||[]},
+      {l:'💜 Autocuidado',tasks:p.autocuidado?[p.autocuidado]:[]}
+    ].filter(c=>c.tasks.length);
+
+    HCATS.forEach(cat=>{
+      const sec=document.createElement('div');sec.className='hist-sec';
+      const st=document.createElement('div');st.className='hist-sec-title';st.textContent=cat.l;sec.appendChild(st);
+      cat.tasks.forEach(t=>{
+        const isDone=d[t]||false;
+        const row=document.createElement('div');
+        row.className='ct'+(isDone?' done':'');
+        row.setAttribute('data-k',t);
+        row.setAttribute('data-si',sIdx);
+        row.style.cssText='background:transparent;border:none;padding:7px 4px;border-bottom:1px solid var(--surface3);border-radius:0;';
+        row.innerHTML=`<div class="hist-dot ${isDone?'done':'undone'}"></div><div class="hist-name ${isDone?'done':''}">${t}</div><div class="hist-status ${isDone?'done':'undone'}">${isDone?'✓ Feito':'Pendente'}</div>`;
+        sec.appendChild(row);
+      });
+      body.appendChild(sec);
+    });
+
+    if(s.checkin){
+      const ci=document.createElement('div');ci.style.marginTop='14px';
+      ci.innerHTML=`<div class="hist-sec-title">📊 Check-in do dia</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+          ${s.checkin.energia?`<span class="hist-chip">⚡ ${s.checkin.energia}</span>`:''}
+          ${s.checkin.emocional?`<span class="hist-chip">💭 ${s.checkin.emocional}</span>`:''}
+          ${s.checkin.tempo?`<span class="hist-chip">⏰ ${s.checkin.tempo}h</span>`:''}
+          ${s.checkin.interrupcoes?`<span class="hist-chip">🔔 ${s.checkin.interrupcoes}</span>`:''}
+          ${s.checkin.caos?`<span class="hist-chip">🌀 Caos ${s.checkin.caos}/10</span>`:''}
+        </div>`;
+      body.appendChild(ci);
+    }
+
+    entry.appendChild(hdr);entry.appendChild(body);el.appendChild(entry);
+  });
+}
+
+// ── NAV ──
+function navTo(id){
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if(id==='screen-welcome') document.getElementById('navHome').classList.add('active');
+  if(id==='screen-history'){document.getElementById('navHist').classList.add('active');renderHistoryScreen();}
+  goTo(id);
+}
+function goTo(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function nStep(n){
+  document.querySelectorAll('.checkin-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step-'+n).classList.add('active');
+  document.getElementById('pFill').style.width=((n-1)/5*100)+'%';
+  document.getElementById('pTxt').textContent=`Passo ${n} de 5`;
+}
+function selOpt(el,k,v){el.closest('.opts').querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');S[k]=v;}
+function updSlider(k,id,vid){const v=document.getElementById(id).value;S[k]=v;document.getElementById(vid).textContent=k==='tempo'?v+'h':v+'/10';}
+function setSlider(k,id){S[k]=document.getElementById(id).value;}
+function startNew(){
+  selTasks.clear();curPlan=null;curDone={};
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('selCount').textContent='Nenhuma tarefa selecionada';
+  nStep(1);goTo('screen-checkin');
+}
+async function loadSession(){
+  const s=await loadHistory();
+  if(!s.length) return;
+  curSIdx=0;curPlan=s[0].plan;curDone={...s[0].doneState};
+  renderResult(curPlan,true,0);
+}
+
+// ── INIT ──
+async function init(){
+  const sessions=await loadHistory();
+  if(!sessions.length) return;
+  document.getElementById('btnRetomar').style.display='block';
+  // Quick summary
+  const s=sessions[0],{pct,done,total}=getStats(s);
+  const icon=MI[s.plan.modo]||'🧠';
+  document.getElementById('quickCard').style.display='block';
+  document.getElementById('quickBody').innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div><div style="font-size:14px;font-weight:600;color:var(--white);">${icon} ${s.plan.modo||'Análise'}</div><div style="font-size:12px;color:var(--gray);margin-top:2px;">${s.date}</div></div>
+      <div style="text-align:right;"><div style="font-size:22px;font-weight:700;color:var(--purple-light);">${pct}%</div><div style="font-size:11px;color:var(--gray);">${done}/${total} feitas</div></div>
+    </div>
+    <div style="height:5px;background:var(--surface3);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--purple-dim),var(--success));border-radius:4px;"></div></div>`;
+  // Resume card
+  const p=s.plan,d=s.doneState||{};
+  const all=getStats(s).all;
+  const preview=all.slice(0,4).map(t=>`<div style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:6px;"><div style="width:12px;height:12px;border-radius:50%;${d[t]?'background:var(--purple)':'border:2px solid var(--border)'};flex-shrink:0;"></div><span style="${d[t]?'text-decoration:line-through;color:var(--gray)':''}">${t}</span></div>`).join('');
+  document.getElementById('resumeCard').innerHTML=`
+    <div class="resume-badge">↩ Sessão em aberto</div>
+    <div style="font-size:16px;font-weight:700;color:var(--white);margin-bottom:4px;">${icon} ${p.modo||'Análise executiva'}</div>
+    <div style="font-size:12px;color:var(--gray);margin-bottom:14px;">${s.date}</div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--gray-light);margin-bottom:6px;"><span>Progresso</span><span>${done}/${total} tarefas</span></div>
+    <div style="height:6px;background:var(--surface3);border-radius:10px;overflow:hidden;margin-bottom:14px;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--purple-dim),var(--success));border-radius:10px;"></div></div>
+    ${preview}${all.length>4?`<div style="font-size:12px;color:var(--gray);margin-top:4px;">+${all.length-4} tarefas</div>`:''}
+    <div style="font-size:12px;color:var(--gray);margin-top:12px;">Toque em "Continuar" para retomar e marcar o que concluiu.</div>`;
+}
+
+// ── AI ──
+async function submitAI(){
+  if(!selTasks.size){alert('Selecione pelo menos uma tarefa.');return;}
+  goTo('screen-loading');
+  const sys=`Você é uma IA especializada em regulação executiva neurocompatível para pessoas com TDAH.
+REGRA CRÍTICA: Responda APENAS com JSON puro. Sem texto antes, sem texto depois, sem markdown.
+{"modo":"MODO EXAUSTÃO|MODO PROCRASTINAÇÃO|MODO PERFECCIONISMO|MODO SOBRECARGA|MODO URGÊNCIA REAL|MODO INTERRUPÇÃO","frase_diagnostico":"máx 2 linhas, humana","essencial_hoje":["tarefa"],"importante":["tarefa"],"pode_esperar":["tarefa"],"descartar_ou_delegar":["tarefa"],"autocuidado":"ação concreta","plano_blocos":[{"horario":"Manhã","foco":"texto"},{"horario":"Tarde","foco":"texto"},{"horario":"Noite","foco":"texto"}],"frase_final":"firme, realista, não motivacional"}
+Use APENAS as tarefas selecionadas. Energia baixa/caos alto = máx 2-3 em essencial_hoje.`;
+  const msg=`CHECK-IN:\n- Energia: ${S.energia||'?'}\n- Emocional: ${S.emocional||'?'}\n- Horas: ${S.tempo}h\n- Interrupções: ${S.interrupcoes||'?'}\n- Caos: ${S.caos}/10\nTAREFAS: ${[...selTasks].join(', ')}`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:[{role:'user',content:msg}]})});
+    const data=await res.json();
+    if(data.error){goTo('screen-result');document.getElementById('resultCard').innerHTML=`<div class="error-box">${data.error.message}</div>`;return;}
+    const raw=data.content?.map(b=>b.text||'').join('')||'';
+    let parsed;
+    try{const m=raw.match(/```json\s*([\s\S]*?)```/)||raw.match(/```([\s\S]*?)```/)||raw.match(/(\{[\s\S]*\})/);parsed=JSON.parse(m?m[1].trim():raw.trim());}
+    catch(e){goTo('screen-result');document.getElementById('resultCard').innerHTML=`<div class="error-box">Erro ao interpretar resposta da IA.</div>`;return;}
+    curPlan=parsed;curDone={};curSIdx=0;
+    const sessions=await loadHistory();
+    sessions.unshift({id:Date.now(),date:new Date().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),checkin:{...S},plan:parsed,doneState:{}});
+    await saveHistory(sessions);
+    renderResult(parsed,false,0);
+  }catch(err){goTo('screen-result');document.getElementById('resultCard').innerHTML=`<div class="error-box">Erro: ${err.message}</div>`;}
+}
+
+async function restart(){
+  S.energia='';S.emocional='';S.tempo='4';S.interrupcoes='';S.caos='5';
+  selTasks.clear();curPlan=null;curDone={};curSIdx=0;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('slTempo').value=4;document.getElementById('slCaos').value=5;
+  document.getElementById('vTempo').textContent='4h';document.getElementById('vCaos').textContent='5/10';
+  document.getElementById('selCount').textContent='Nenhuma tarefa selecionada';
+  await init();navTo('screen-welcome');
+}
+
+init();
+</script>
+</body>
+</html>
